@@ -11,16 +11,21 @@ import '@/assets/css/index.less'
 
 // 路由和pinia
 import router from './router'
-import pinia from './store'
+import store from './store'
 
 // elemnet图标注册为全局组件
-import registerIcon from './global/register-icons'
+import icons from './global/register-icons'
 
 
 
 import { createApp } from 'vue'
 import App from './App.vue'
+import useLoginStore from './store/login/login'
 
 const app = createApp(App)
-app.use(registerIcon)
-app.use(router).use(pinia).mount('#app')
+app.use(icons)
+// store为添加动态路由后的pinia
+app.use(store)
+// 使用添加动态路由后的路由器
+app.use(router)
+app.mount('#app')
