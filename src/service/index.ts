@@ -15,7 +15,7 @@ const hyRequest = new HYRequest({
         config.headers.Authorization = "Bearer " + token
       }
       return config
-    }
+    },
   }
 })
 

@@ -5,6 +5,7 @@ import { defineStore } from "pinia"
 
 // 常量
 import { LOGIN_TOKEN } from "@/global/constants"
+import useMainStore from "../main/main"
 
 // 类型或接口
 interface ILoginState {
@@ -44,6 +45,9 @@ const useLoginStore = defineStore('login', {
       this.userMenus = menuRes.data
       localCache.setCache('userMenus', menuRes.data)
 
+      // 5.获取所有的主页所备用的数据：菜单、部门、角色
+      const mainStore = useMainStore()
+      mainStore.fetchEntireDataAction()
 
       // 5.根据菜单动态添加路由
       addRoutesWithMenu(this.userMenus)
@@ -58,6 +62,9 @@ const useLoginStore = defineStore('login', {
       this.userMenus = localCache.getCache('userMenus')
       //加载缓存菜单后进行动态路由添加
       addRoutesWithMenu(this.userMenus)
+      // 再次请求备选数据
+      const mainStore = useMainStore()
+      mainStore.fetchEntireDataAction()
     }
   },
 })

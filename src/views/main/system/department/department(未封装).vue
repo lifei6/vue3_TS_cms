@@ -1,26 +1,20 @@
 <template>
-  <div :class="searchConfig.pageName">
+  <div class="department">
     <!-- 1.搜索区域 -->
-    <page-search :searchConfig="searchConfig" @query-click="handleQueryClick" @reset-click="handleResetClick" />
+    <page-search @query-click="handleQueryClick" @reset-click="handleResetClick" />
 
     <!-- 2.展示区域 -->
-    <page-content :contentConfig="contentConfig" ref="contentRef" @new-data-click="handleNewDataClick"
-      @edit-data-click="handleEditDataClick" />
+    <page-content ref="contentRef" @new-data-click="handleNewDataClick" @edit-data-click="handleEditDataClick" />
 
     <!-- 3.弹出新建\编辑区 -->
-    <page-modal :modalConfig="modalConfig" ref="modalRef" />
+    <page-modal ref="modalRef" />
   </div>
 </template>
 
 <script setup lang="ts" name="department">
-import PageSearch from '@/components/page-search/page-search.vue'
-import PageContent from '@/components/page-content/page-content.vue'
-import PageModal from '@/components/page-modal/page-modal.vue'
-
-// 导入配置
-import searchConfig from './config/search.config'
-import contentConfig from './config/content.config'
-import modalConfig from './config/modal.config'
+import PageSearch from './c-cpns/page-search.vue'
+import PageContent from './c-cpns/page-content.vue'
+import PageModal from './c-cpns/page-modal.vue'
 
 import { ref } from 'vue';
 
