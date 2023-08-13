@@ -1,6 +1,9 @@
 const modalConfig = {
   pageName: 'department',
-  title: '新建部门',
+  header: {
+    newTitle: '新建部门',
+    editTitle: '编辑部门'
+  },
   formItems: [
     {
       label: '部门名称',

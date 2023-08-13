@@ -10,11 +10,20 @@
                 <el-input v-model="searchForm[item.prop]" :placeholder="item.placeholder" />
               </template>
               <template v-if="item.type === 'password'">
-                <el-input show-password v-model="searchForm[item.prop]" :placeholder="item.placeholder" />
+                <el-input
+                  show-password
+                  v-model="searchForm[item.prop]"
+                  :placeholder="item.placeholder"
+                />
               </template>
               <template v-if="item.type === 'date-picker'">
-                <el-date-picker type="daterange" range-separator="-" start-placeholder="开始时间" end-placeholder="结束时间"
-                  v-model="searchForm[item.prop]" />
+                <el-date-picker
+                  type="daterange"
+                  range-separator="-"
+                  start-placeholder="开始时间"
+                  end-placeholder="结束时间"
+                  v-model="searchForm[item.prop]"
+                />
               </template>
             </el-form-item>
           </el-col>
@@ -35,6 +44,7 @@
 import type { ElForm } from 'element-plus'
 import { reactive, ref } from 'vue'
 
+// 1.定义外部属性和方法
 interface IProps {
   searchConfig: {
     pageName: string
@@ -44,16 +54,17 @@ interface IProps {
 const props = defineProps<IProps>()
 const emit = defineEmits(['queryClick', 'resetClick'])
 
-// 1.创建表单的数据
+// 2.创建表单的数据
 const initialForm: any = {}
 for (const item of props.searchConfig.formItems) {
   initialForm[item['prop']] = item['initialValue'] ?? ''
 }
 const searchForm = reactive(initialForm)
 
-// 2.监听按钮的点击
+// 3.监听按钮的点击（重置和查询）
 const formRef = ref<InstanceType<typeof ElForm>>()
 function handleResetClick() {
+  // 清空表单
   formRef.value?.resetFields()
   emit('resetClick')
 }

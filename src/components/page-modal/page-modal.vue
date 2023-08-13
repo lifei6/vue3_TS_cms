@@ -1,6 +1,11 @@
 <template>
   <div class="modal">
-    <el-dialog v-model="dialogVisible" :title="modalConfig.title" width="30%" center>
+    <el-dialog
+      v-model="dialogVisible"
+      :title="isEdit ? modalConfig.header.editTitle : modalConfig.header.newTitle"
+      width="30%"
+      center
+    >
       <div class="form">
         <el-form :model="formData" label-width="80px" size="large">
           <template v-for="item in modalConfig.formItems" :key="item.prop">
@@ -21,8 +26,8 @@
                   :placeholder="item.placeholder"
                   style="width: 100%"
                 >
-                  <template v-for="value in item.options" :key="value.id">
-                    <el-option :value="value.id" :label="value.name" />
+                  <template v-for="option in item.options" :key="option.value">
+                    <el-option v-bind="option" />
                   </template>
                 </el-select>
               </template>
@@ -56,38 +61,39 @@
 import useSystemStore from '@/store/main/system/system'
 import { reactive, ref } from 'vue'
 
-// 定义props
+// 1.定义外部属性
 interface IProps {
   modalConfig: {
     pageName: string
-    title: string
+    header: {
+      newTitle: string
+      editTitle: string
+    }
     formItems: any[]
   }
   otherInfo?: any
 }
-
 const props = defineProps<IProps>()
 
-const dialogVisible = ref(false)
+// 2.定义内部属性
+const dialogVisible = ref<boolean>(false)
 const isEdit = ref(false)
 const editData = ref()
 
-// 部门和角色的数据
-// const mainStore = useMainStore()
-// const { entireDepartments } = storeToRefs(mainStore)
-
-// 定义数据绑定
+// 3.定义表单数据绑定
 const initialForm: any = {}
 for (const item of props.modalConfig.formItems) {
   initialForm[item.prop] = item.initialValue ?? ''
 }
 const formData = reactive(initialForm)
 
-// 点击确定
+// 4.点击确定提交服务器（新建或者编辑）
 const systemStore = useSystemStore()
 function handleConfirmClick() {
   dialogVisible.value = false
   let data = { ...formData }
+  // 出表单数据外还有可能是自定义表单项的数据，因
+  // 为是外部传结构，所有数据收集在外部，需要传递过来一起发请求
   if (props.otherInfo) {
     data = { ...data, ...props.otherInfo }
   }
@@ -98,7 +104,7 @@ function handleConfirmClick() {
   }
 }
 
-// 新建或者编辑
+// 新建或者编辑的触发函数暴露给外面使用（控制弹出层的显示和消失）
 function setDialogVisible(isNew: boolean = true, data: any = {}) {
   dialogVisible.value = true
   isEdit.value = !isNew
@@ -111,7 +117,6 @@ function setDialogVisible(isNew: boolean = true, data: any = {}) {
     }
   }
 }
-
 defineExpose({
   setDialogVisible
 })

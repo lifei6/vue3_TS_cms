@@ -1,6 +1,9 @@
 const modalConfig = {
   pageName: 'role',
-  title: '新建角色',
+  header: {
+    newTitle: '新建角色',
+    editTitle: '编辑角色'
+  },
   formItems: [
     {
       type: 'input',

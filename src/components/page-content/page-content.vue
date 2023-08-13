@@ -2,11 +2,18 @@
   <div class="content">
     <div class="header">
       <h3 class="title">{{ contentConfig.header?.title }}</h3>
-      <el-button type="primary" @click="handleNewData">{{ contentConfig.header?.btnTitle }}</el-button>
+      <el-button type="primary" @click="handleNewData">{{
+        contentConfig.header?.btnTitle
+      }}</el-button>
     </div>
     <div class="table">
-      <el-table :data="pageList" :border="true" style="width: 100%" highlight-current-row
-        v-bind="contentConfig.childrenProps">
+      <el-table
+        :data="pageList"
+        :border="true"
+        style="width: 100%"
+        highlight-current-row
+        v-bind="contentConfig.childrenProps"
+      >
         <template v-for="item in contentConfig.propsList" :key="item.label">
           <template v-if="item.type === 'time'">
             <el-table-column align="center" :prop="item.prop" :label="item.label">
@@ -26,10 +33,22 @@
                   @click="handleDeleteClick(scope.row.id)">
                   删除
                 </el-button> -->
-                <el-button type="primary" size="small" icon="EditPen" link @click="handleEditClick(scope.row)">
+                <el-button
+                  type="primary"
+                  size="small"
+                  icon="EditPen"
+                  link
+                  @click="handleEditClick(scope.row)"
+                >
                   编辑
                 </el-button>
-                <el-button type="danger" size="small" icon="Delete" link @click="handleDeleteClick(scope.row.id)">
+                <el-button
+                  type="danger"
+                  size="small"
+                  icon="Delete"
+                  link
+                  @click="handleDeleteClick(scope.row.id)"
+                >
                   删除
                 </el-button>
               </template>
@@ -50,21 +69,26 @@
       </el-table>
     </div>
     <div class="footer">
-      <el-pagination v-model:currentPage="currentPage" v-model:page-size="pageSize" :page-sizes="[10, 20, 30]"
-        layout="total, sizes, prev, pager, next, jumper" :total="pageTotalCount" @update:page-size="handlePageSizeChange"
-        @current-change="handleCurrentChange" />
+      <el-pagination
+        v-model:currentPage="currentPage"
+        v-model:page-size="pageSize"
+        :page-sizes="[10, 20, 30]"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="pageTotalCount"
+        @update:page-size="handlePageSizeChange"
+        @current-change="handleCurrentChange"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts" name="content">
 import { storeToRefs } from 'pinia'
-import useSystemStore from "@/store/main/system/system"
+import useSystemStore from '@/store/main/system/system'
 import { utcFormat } from '@/utils/format'
 import { ref } from 'vue'
 
-
-// 定义数据和方法
+// 1.定义外部数据和方法
 interface IProps {
   contentConfig: {
     pageName: string
@@ -79,14 +103,11 @@ interface IProps {
 const props = defineProps<IProps>()
 const emit = defineEmits(['newDataClick', 'editDataClick'])
 
-
 // // 0.判断是否有增删改查的权限
 // const isCreate = usePermission(props.contentConfig.pageName, 'create')
 // const isDelete = usePermission(props.contentConfig.pageName, 'delete')
 // const isUpdate = usePermission(props.contentConfig.pageName, 'update')
 // const isQuery = usePermission(props.contentConfig.pageName, 'query')
-
-
 
 // 1.请求数据
 const systemStore = useSystemStore()
@@ -125,16 +146,15 @@ function handleNewData() {
   emit('newDataClick')
 }
 
-// 5.删除和编辑操作
+// 5.删除数据
 function handleDeleteClick(id: number) {
   systemStore.deletePageDataAction(props.contentConfig.pageName, id)
 }
 
+// 6.编辑数据
 function handleEditClick(data: any) {
   emit('editDataClick', data)
 }
-
-
 
 // 暴露函数
 defineExpose({

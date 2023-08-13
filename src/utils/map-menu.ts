@@ -94,4 +94,37 @@ export function mapPathToMenu(menus: any[], path: string) {
   }
 }
 
+// 菜单==>id
+export function mapMenuToIds(menus: any[]) {
+  const ids: number[] = []
+  function _recurseGetId(menusList: any[]) {
+    for (const menu of menusList) {
+      if (menu.children) {
+        _recurseGetId(menu.children)
+      } else {
+        ids.push(menu.id)
+      }
+    }
+  }
+  _recurseGetId(menus)
+  console.log("menus", menus)
+  console.log('ids', ids)
+  return ids
+}
+
+export function mapMenuToPersssions(menus: any[]) {
+  const permissions: string[] = []
+  function _recurseGetPermission(menuList: any[]) {
+    for (const menu of menuList) {
+      if (menu.type === 1 || menu.type === 2) {
+        _recurseGetPermission(menu.children ?? [])
+      } else {
+        permissions.push(menu.permission)
+      }
+    }
+  }
+  _recurseGetPermission(menus)
+  return permissions
+}
+
 

@@ -39,6 +39,7 @@ declare module 'vue' {
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
     ElTabPane: typeof import('element-plus/es')['ElTabPane']
     ElTabs: typeof import('element-plus/es')['ElTabs']
+    ElTree: typeof import('element-plus/es')['ElTree']
     HeaderCrumb: typeof import('./src/components/nav-header/c-cpns/header-crumb.vue')['default']
     HeaderInfo: typeof import('./src/components/nav-header/c-cpns/header-info.vue')['default']
     NavHeader: typeof import('./src/components/nav-header/nav-header.vue')['default']
