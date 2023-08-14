@@ -4,8 +4,13 @@
       <img class="img" src="@/assets/img/logo.svg" alt="logo" />
       <span v-show="!isFold" class="title">弘源管理系统</span>
     </div>
-    <el-menu :default-active="defaultValue" :collapse="isFold" text-color="#b7bdc3" active-text-color="#fff"
-      background-color="#001529">
+    <el-menu
+      :default-active="defaultValue"
+      :collapse="isFold"
+      text-color="#b7bdc3"
+      active-text-color="#fff"
+      background-color="#001529"
+    >
       <template v-for="item in userMenus" :key="item.id">
         <!-- 1.系统总览 -->
         <el-sub-menu :index="item.id + ''">
@@ -28,7 +33,7 @@
 </template>
 
 <script setup lang="ts" name="nav-menu">
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import useLoginStore from '@/store/login/login'
 import { useRoute, useRouter } from 'vue-router'
 import { mapPathToMenu } from '@/utils/map-menu'
@@ -50,12 +55,18 @@ const router = useRouter()
 const route = useRoute()
 // 初始化当前的菜单id
 let currentMenu = mapPathToMenu(userMenus, route.path)
-const defaultValue = ref<string>(currentMenu.id + '')
+const defaultValue = ref<string>(currentMenu?.id + '')
 // 监视路由变化去读取最新的菜单id
 watch(router.currentRoute, () => {
   currentMenu = mapPathToMenu(userMenus, route.path)
   defaultValue.value = currentMenu.id + ''
 })
+
+// const defaultValue = computed(() => {
+//   const route = useRoute()
+//   let currentMenu = mapPathToMenu(userMenus, route.path)
+//   return currentMenu?.id + ''
+// })
 
 // 3.监听item点击
 function handleItemClick(item: any) {

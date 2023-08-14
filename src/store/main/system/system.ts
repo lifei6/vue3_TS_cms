@@ -10,6 +10,7 @@ import {
 } from '@/service/main/system'
 import { defineStore } from 'pinia'
 import type { ISystemState } from './type'
+import useMainStore from '../main'
 
 const useSystemStore = defineStore('system', {
   state: (): ISystemState => ({
@@ -60,17 +61,26 @@ const useSystemStore = defineStore('system', {
       const res = await deletePageData(pageName, id)
       console.log(res)
       this.getPageListDataAction(pageName, { offset: 0, size: 10 })
+      // 更新部门、菜单等选项
+      const mainStore = useMainStore()
+      mainStore.fetchEntireDataAction()
     },
     async newPageDataAction(pageName: string, pageData: any) {
       const res = await newPageData(pageName, pageData)
       console.log(pageData)
       console.log(res)
       this.getPageListDataAction(pageName, { offset: 0, size: 10 })
+      // 更新部门、菜单等选项
+      const mainStore = useMainStore()
+      mainStore.fetchEntireDataAction()
     },
     async editPageDataAction(pageName: string, id: number, pageData: any) {
       const res = await editPageData(pageName, id, pageData)
       console.log(res)
       this.getPageListDataAction(pageName, { offset: 0, size: 10 })
+      // 更新部门、菜单等选项
+      const mainStore = useMainStore()
+      mainStore.fetchEntireDataAction()
     }
   }
 })

@@ -2,7 +2,7 @@
   <div class="content">
     <div class="header">
       <h3 class="title">{{ contentConfig.header?.title }}</h3>
-      <el-button type="primary" @click="handleNewData">{{
+      <el-button type="primary" @click="handleNewData" v-if="isCreate">{{
         contentConfig.header?.btnTitle
       }}</el-button>
     </div>
@@ -34,6 +34,7 @@
                   删除
                 </el-button> -->
                 <el-button
+                  v-if="isUpdate"
                   type="primary"
                   size="small"
                   icon="EditPen"
@@ -43,6 +44,7 @@
                   编辑
                 </el-button>
                 <el-button
+                  v-if="isDelete"
                   type="danger"
                   size="small"
                   icon="Delete"
@@ -86,6 +88,7 @@
 import { storeToRefs } from 'pinia'
 import useSystemStore from '@/store/main/system/system'
 import { utcFormat } from '@/utils/format'
+import usePermission from '@/hooks/usePermission'
 import { ref } from 'vue'
 
 // 1.定义外部数据和方法
@@ -103,17 +106,20 @@ interface IProps {
 const props = defineProps<IProps>()
 const emit = defineEmits(['newDataClick', 'editDataClick'])
 
-// // 0.判断是否有增删改查的权限
-// const isCreate = usePermission(props.contentConfig.pageName, 'create')
-// const isDelete = usePermission(props.contentConfig.pageName, 'delete')
-// const isUpdate = usePermission(props.contentConfig.pageName, 'update')
-// const isQuery = usePermission(props.contentConfig.pageName, 'query')
+// 0.判断是否有增删改查的权限
+const isCreate = usePermission(props.contentConfig.pageName, 'create')
+const isDelete = usePermission(props.contentConfig.pageName, 'delete')
+const isUpdate = usePermission(props.contentConfig.pageName, 'update')
+const isQuery = usePermission(props.contentConfig.pageName, 'query')
 
 // 1.请求数据
 const systemStore = useSystemStore()
 const currentPage = ref(1)
 const pageSize = ref(10)
 function fetchPageListData(queryInfo: any = {}) {
+  // 查询权限
+  if (!isQuery) return
+
   // 1.获取offset和size
   const size = pageSize.value
   const offset = (currentPage.value - 1) * size
@@ -155,6 +161,19 @@ function handleDeleteClick(id: number) {
 function handleEditClick(data: any) {
   emit('editDataClick', data)
 }
+
+// 7.监听数据库的action， 增删改  回到第一页
+systemStore.$onAction(({ name, after }) => {
+  after(() => {
+    if (
+      name == 'deletePageDataAction' ||
+      name == 'editPageDataAction' ||
+      name == 'newPageDataAction'
+    ) {
+      currentPage.value = 1
+    }
+  })
+})
 
 // 暴露函数
 defineExpose({

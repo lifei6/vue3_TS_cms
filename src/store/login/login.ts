@@ -6,12 +6,14 @@ import { defineStore } from "pinia"
 // 常量
 import { LOGIN_TOKEN } from "@/global/constants"
 import useMainStore from "../main/main"
+import { mapMenuToPersssions } from "@/utils/map-menu"
 
 // 类型或接口
 interface ILoginState {
   token: string
   userInfo: any
   userMenus: any[]
+  permissions: string[]
 }
 
 
@@ -20,7 +22,8 @@ const useLoginStore = defineStore('login', {
   state: (): ILoginState => ({
     token: '',
     userInfo: {},
-    userMenus: []
+    userMenus: [],
+    permissions: []
   }),
   actions: {
     // 首次登入执行
@@ -36,7 +39,7 @@ const useLoginStore = defineStore('login', {
       // 3.获取用户信息:根据id获取并本地存储
       const userRes = await getUserById(id)
       this.userInfo = userRes.data
-      localCache.setCache('useInfo', userRes.data)
+      localCache.setCache('userInfo', userRes.data)
 
       // 用户信息里面有对应的角色信息role
       // 4.根据role的id获取菜单:根据id获取并本地存储
@@ -49,10 +52,14 @@ const useLoginStore = defineStore('login', {
       const mainStore = useMainStore()
       mainStore.fetchEntireDataAction()
 
-      // 5.根据菜单动态添加路由
+      // 6.获取用户按钮权限
+      const permissions = mapMenuToPersssions(this.userMenus)
+      this.permissions = permissions
+
+      // 7.根据菜单动态添加路由
       addRoutesWithMenu(this.userMenus)
 
-      // 6.跳转到首页
+      // 8.跳转到首页
       router.push('/main')
     },
     // 页面刷新重新运行app，加载本地缓存执行，读取缓存后进行动态路由添加
@@ -60,11 +67,18 @@ const useLoginStore = defineStore('login', {
       this.token = localCache.getCache(LOGIN_TOKEN)
       this.userInfo = localCache.getCache('userInfo')
       this.userMenus = localCache.getCache('userMenus')
-      //加载缓存菜单后进行动态路由添加
-      addRoutesWithMenu(this.userMenus)
-      // 再次请求备选数据
-      const mainStore = useMainStore()
-      mainStore.fetchEntireDataAction()
+      if (this.token && this.userInfo && this.userMenus) {
+        // 再次请求备选数据(全部的菜单、部门、角色)
+        const mainStore = useMainStore()
+        mainStore.fetchEntireDataAction()
+
+        // 再次获取用户按钮权限
+        const permissions = mapMenuToPersssions(this.userMenus)
+        this.permissions = permissions
+
+        //加载缓存菜单后进行动态路由添加
+        addRoutesWithMenu(this.userMenus)
+      }
     }
   },
 })

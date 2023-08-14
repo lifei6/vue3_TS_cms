@@ -1,5 +1,5 @@
 <template>
-  <div :class="searchConfig.pageName">
+  <div :class="searchConfig.pageName" v-if="isQuery">
     <!-- 1.1.表单输入 -->
     <el-form :model="searchForm" ref="formRef" label-width="120px" size="large">
       <el-row :gutter="20">
@@ -41,6 +41,7 @@
 </template>
 
 <script setup lang="ts" name="page-search">
+import usePermission from '@/hooks/usePermission'
 import type { ElForm } from 'element-plus'
 import { reactive, ref } from 'vue'
 
@@ -53,6 +54,8 @@ interface IProps {
 }
 const props = defineProps<IProps>()
 const emit = defineEmits(['queryClick', 'resetClick'])
+
+const isQuery = usePermission(props.searchConfig.pageName, 'query')
 
 // 2.创建表单的数据
 const initialForm: any = {}

@@ -56,13 +56,16 @@ import type { ElTree } from 'element-plus'
 // 1.搜索和重置功能
 const { contentRef, handleQueryClick, handleResetClick } = usePageContent()
 // 2.modal的逻辑处理:编辑和新建
-const { modalRef, handleEditDataClick, handleNewDataClick } = usePageModal(editCallback)
+const { modalRef, handleEditDataClick, handleNewDataClick } = usePageModal(
+  newCallback,
+  editCallback
+)
 
 // 3获取菜单树形数据
 // 3.1获取菜单列表
 const mainStore = useMainStore()
 const { entireMenus } = storeToRefs(mainStore)
-// 3.2获取权限id数组
+// 3.2获取权限id数组（传递给pageModal一起组成提交的表单数据）
 const otherInfo = ref({})
 function handleMenuCheckChange(data1: any, data2: any) {
   // 一个权限对应一个id,菜单和按钮都是
@@ -71,7 +74,13 @@ function handleMenuCheckChange(data1: any, data2: any) {
 }
 // 3.3进行权限的回显
 const treeRef = ref<InstanceType<typeof ElTree>>()
+function newCallback() {
+  nextTick(() => {
+    treeRef.value?.setCheckedKeys([])
+  })
+}
 function editCallback(data: any) {
+  // 需要先弹出对话框，才能拿到权限树的实例，基于这个实例设置回显数据
   nextTick(() => {
     const menuList = mapMenuToIds(data.menuList)
     treeRef.value?.setCheckedKeys(menuList)

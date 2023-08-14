@@ -107,11 +107,13 @@ export function mapMenuToIds(menus: any[]) {
     }
   }
   _recurseGetId(menus)
-  console.log("menus", menus)
-  console.log('ids', ids)
+  // console.log("menus", menus)
+  // console.log('ids', ids)
   return ids
 }
 
+
+// 菜单==>按钮（增删改查）权限
 export function mapMenuToPersssions(menus: any[]) {
   const permissions: string[] = []
   function _recurseGetPermission(menuList: any[]) {

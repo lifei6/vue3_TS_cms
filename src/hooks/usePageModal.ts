@@ -2,11 +2,16 @@
 import type PageModal from "@/components/page-modal/page-modal.vue"
 import { ref } from "vue"
 
-type editFnCallback = (data: any) => void
+type fnCallback = (data?: any) => void
 
-function usePageModal(editCallback?: editFnCallback) {
+function usePageModal(
+  newCallback?: fnCallback,
+  editCallback?: fnCallback) {
   const modalRef = ref<InstanceType<typeof PageModal>>()
   function handleNewDataClick() {
+    if (newCallback) {
+      newCallback()
+    }
     modalRef.value?.setDialogVisible()
   }
   function handleEditDataClick(data: any) {

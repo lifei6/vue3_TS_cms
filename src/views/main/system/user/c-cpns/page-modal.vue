@@ -62,7 +62,8 @@ const formData = reactive<any>({
   password: '',
   cellphone: '',
   roleId: '',
-  departmentId: ''
+  departmentId: '',
+  enable: 1 //默认启动
 })
 
 // 点击确定
@@ -95,6 +96,7 @@ function setDialogVisible(isNew: boolean = true, data: any = {}) {
       formData[key] = data[key]
     }
   }
+  formData['enable'] = 1
 }
 
 defineExpose({
